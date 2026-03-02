@@ -83,28 +83,22 @@
     function initUHIDKeyboard() {
         if (uhidKeyboardInitialized) return;
 
-        if (window.ws && window.ws.readyState === WebSocket.OPEN) {
-            window.ws.send(createUHIDKeyboardDestroyPacket());
-        }
+        sendDataChannelMessage(window.dataChannelOrdered, createUHIDKeyboardDestroyPacket());
 
         const packet = createUHIDKeyboardCreatePacket();
-        if (window.ws && window.ws.readyState === WebSocket.OPEN) {
-            window.ws.send(packet);
-            uhidKeyboardInitialized = true;
-            console.log("UHID Keyboard device created");
-        }
+        sendDataChannelMessage(window.dataChannelOrdered, packet);
+        uhidKeyboardInitialized = true;
+        console.log("UHID Keyboard device created");
     }
 
     function destroyUHIDKeyboard() {
         if (!uhidKeyboardInitialized) return;
 
         const packet = createUHIDKeyboardDestroyPacket();
-        if (window.ws && window.ws.readyState === WebSocket.OPEN) {
-            window.ws.send(packet);
-            uhidKeyboardInitialized = false;
-            uhidKeyboardEnabled = false;
-            console.log("UHID Keyboard device destroyed");
-        }
+        sendDataChannelMessage(window.dataChannelOrdered, packet);
+        uhidKeyboardInitialized = false;
+        uhidKeyboardEnabled = false;
+        console.log("UHID Keyboard device destroyed");
     }
 
     function toggleUHIDKeyboard() {

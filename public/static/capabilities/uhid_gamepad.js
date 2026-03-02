@@ -83,28 +83,22 @@
         if (uhidGamepadInitialized) return;
 
         // 尝试先销毁旧设备 (如果存在)
-        if (window.ws && window.ws.readyState === WebSocket.OPEN) {
-            window.ws.send(createUHIDGamepadDestroyPacket());
-        }
+        sendDataChannelMessage(window.dataChannelOrdered, createUHIDGamepadDestroyPacket());
 
         const packet = createUHIDGamepadCreatePacket();
-        if (window.ws && window.ws.readyState === WebSocket.OPEN) {
-            window.ws.send(packet);
-            uhidGamepadInitialized = true;
-            console.log("UHID Gamepad device created");
-        }
+        sendDataChannelMessage(window.dataChannelOrdered, packet);
+        uhidGamepadInitialized = true;
+        console.log("UHID Gamepad device created");
     }
 
     function destroyUHIDGamepad() {
         if (!uhidGamepadInitialized) return;
 
         const packet = createUHIDGamepadDestroyPacket();
-        if (window.ws && window.ws.readyState === WebSocket.OPEN) {
-            window.ws.send(packet);
-            uhidGamepadInitialized = false;
-            uhidGamepadEnabled = false;
-            console.log("UHID Gamepad device destroyed");
-        }
+        sendDataChannelMessage(window.dataChannelOrdered, packet);
+        uhidGamepadInitialized = false;
+        uhidGamepadEnabled = false;
+        console.log("UHID Gamepad device destroyed");
     }
 
     // 暴露给外部调用的开关函数
