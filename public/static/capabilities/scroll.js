@@ -27,6 +27,32 @@ function sendPendingScroll() {
     }
 }
 
+function getScreenCoordinates(clientX, clientY) {
+    // 使用缓存的矩形和缩放比例
+    if (!window.cachedRect.VideoRect) {
+        if (!updateVideoCache()) {
+            return null;
+        }
+    }
+
+    const offsetX = clientX - window.cachedRect.VideoRect.left;
+    const offsetY = clientY - window.cachedRect.VideoRect.top;
+
+    // 相对于视频内容区域的坐标
+    const contentX = offsetX - window.cachedRect.ContentRect.left;
+    const contentY = offsetY - window.cachedRect.ContentRect.top;
+
+    // 映射到视频源分辨率
+    const x = (contentX / window.cachedRect.ContentRect.width) * remoteVideo.videoWidth;
+    const y = (contentY / window.cachedRect.ContentRect.height) * remoteVideo.videoHeight;
+
+    // Clamp coordinates to be within video bounds
+    const clampedX = Math.max(0, Math.min(Math.round(x), remoteVideo.videoWidth));
+    const clampedY = Math.max(0, Math.min(Math.round(y), remoteVideo.videoHeight));
+
+    return { x: clampedX, y: clampedY };
+}
+
 const handleWheel = (event) => {
     // 阻止默认的页面滚动行为
     event.preventDefault();
