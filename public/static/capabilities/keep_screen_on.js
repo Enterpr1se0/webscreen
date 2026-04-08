@@ -33,6 +33,9 @@
             if (wakeLock !== null && document.visibilityState === 'visible') {
                 requestWakeLock();
             }
+            else if (wakeLock !== null && document.visibilityState === 'hidden') {
+                releaseWakeLock();
+            }
         });
 
     }

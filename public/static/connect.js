@@ -367,6 +367,8 @@ async function updateUIBasedOnCapabilities(caps) {
             }
         }
 
+        await loadScript('/static/capabilities/keep_screen_on.js');
+
     }
 
 }

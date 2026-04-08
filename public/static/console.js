@@ -408,7 +408,7 @@ function showConfigModal(serial) {
         document.getElementById('configVideoBitrate').value = formatBitrate(drv.video_bit_rate).replace(/[KMG]$/, '') || '';
         document.getElementById('configMaxSize').value = drv.max_size || '';
         document.getElementById('configVideoCodec').value = drv.video_codec || 'h264';
-        // document.getElementById('configVideoCodecOptions').value = drv.video_codec_options || '';
+        document.getElementById('configVideoCodecOptions').value = drv.video_codec_options || '';
         document.getElementById('configAudio').checked = drv.audio === 'true';
         document.getElementById('configNewDisplay').value = drv.new_display || '';
     }
@@ -447,7 +447,7 @@ function saveDeviceConfig() {
         drv.video_bit_rate = parseBitrate(bitrateInput + (bitrateInput.match(/[KMG]/i) ? '' : 'M'));
         drv.max_size = document.getElementById('configMaxSize').value.trim() || '';
         drv.video_codec = document.getElementById('configVideoCodec').value;
-        // drv.video_codec_options = document.getElementById('configVideoCodecOptions').value.trim();
+        drv.video_codec_options = document.getElementById('configVideoCodecOptions').value.trim();
         drv.new_display = document.getElementById('configNewDisplay').value.trim();
         drv.audio = document.getElementById('configAudio').checked ? 'true' : 'false';
         drv.audio_codec = 'opus'; // Hardcoded default for now

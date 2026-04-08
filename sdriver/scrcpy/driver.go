@@ -257,6 +257,12 @@ func New(config map[string]string) (*ScrcpyDriver, error) {
 		}
 
 	}
+
+	video_codec_options_user := config["video_codec_options"]
+	if video_codec_options_user != "" {
+		video_codec_options = video_codec_options_user
+		log.Printf("Using user-provided video codec options: %s", video_codec_options)
+	}
 	options := map[string]string{
 		"CLASSPATH":           SCRCPY_SERVER_ANDROID_DST,
 		"Version":             SCRCPY_VERSION,
