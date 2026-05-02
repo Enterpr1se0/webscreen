@@ -26,6 +26,7 @@ func (sa *Agent) ServeVideoStream() {
 		payloader = &codecs.H265Payloader{}
 	default:
 		log.Printf("Unsupported video codec: %s", codec)
+		sa.controlCh <- sdriver.TextMsgEvent{Msg: "The video codec is not H264 neither H265, cannot stream video."}
 		return
 	}
 	packetizer := rtp.NewPacketizer(
@@ -52,6 +53,7 @@ func (sa *Agent) ServeVideoStream() {
 			p.Timestamp = exactRtpTimestamp
 			if err := sa.videoTrack.WriteRTP(p); err != nil {
 				log.Printf("Failed to write video RTP packet: %v", err)
+				sa.controlCh <- sdriver.TextMsgEvent{Msg: "Failed to write video RTP packet."}
 				return
 			}
 		}
@@ -60,6 +62,7 @@ func (sa *Agent) ServeVideoStream() {
 
 func (sa *Agent) ServeAudioStream() {
 	if sa.audioCh == nil {
+		sa.controlCh <- sdriver.TextMsgEvent{Msg: "Audio channel is nil, cannot stream audio."}
 		return
 	}
 	packetizer := rtp.NewPacketizer(1200, 0, 0, &codecs.OpusPayloader{}, rtp.NewRandomSequencer(), 48000)
@@ -93,6 +96,7 @@ func (sa *Agent) ServeAudioStream() {
 			p.Timestamp = currentAudioRTP
 			if err := sa.audioTrack.WriteRTP(p); err != nil {
 				log.Printf("Failed to write audio RTP packet: %v", err)
+				sa.controlCh <- sdriver.TextMsgEvent{Msg: "Failed to write audio RTP packet."}
 				return
 			}
 		}
