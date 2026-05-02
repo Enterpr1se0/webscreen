@@ -556,13 +556,7 @@ func getMimeTypeFromConfig(config sagent.AgentConfig) (string, string) {
 	default:
 		log.Printf("Unsupported video codec: %s", config.DriverConfig["video_codec"])
 	}
-	switch config.DriverConfig["audio_codec"] {
-	case "opus":
-		audioMimeType = webrtc.MimeTypeOpus
-	default:
-		log.Printf("Unsupported audio codec: %s", config.DriverConfig["audio_codec"])
-		audioMimeType = webrtc.MimeTypeOpus
-	}
+	audioMimeType = webrtc.MimeTypeOpus // 强制使用 Opus 音频编码，确保兼容性
 	log.Printf("Creating tracks with MIME types - Video: %s, Audio: %s", videoMimeType, audioMimeType)
 	return videoMimeType, audioMimeType
 }
