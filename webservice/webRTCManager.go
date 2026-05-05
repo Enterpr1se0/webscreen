@@ -554,7 +554,8 @@ func getMimeTypeFromConfig(config sagent.AgentConfig) (string, string) {
 	case "av1":
 		videoMimeType = webrtc.MimeTypeAV1
 	default:
-		log.Printf("Unsupported video codec: %s", config.DriverConfig["video_codec"])
+		videoMimeType = webrtc.MimeTypeH264 // 默认使用 H.264
+		log.Printf("Unsupported or missing video codec in config, defaulting to H.264")
 	}
 	audioMimeType = webrtc.MimeTypeOpus // 强制使用 Opus 音频编码，确保兼容性
 	log.Printf("Creating tracks with MIME types - Video: %s, Audio: %s", videoMimeType, audioMimeType)
