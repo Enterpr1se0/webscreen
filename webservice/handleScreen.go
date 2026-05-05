@@ -45,6 +45,7 @@ func (wm *WebMaster) handleScreenWS(c *gin.Context) {
 		conn.Close()
 		return
 	}
+	log.Printf("Received connection config: %+v", config)
 
 	// Create a unique ID for one abstract device
 	deviceIdentifier := config.DeviceType + "_" + config.DeviceID + "_" + config.DeviceIP + "_" + config.DevicePort
