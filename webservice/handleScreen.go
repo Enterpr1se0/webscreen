@@ -70,7 +70,7 @@ func (wm *WebMaster) handleScreenWS(c *gin.Context) {
 	log.Println("deviceIdentifier:", deviceIdentifier, "receiptNo:", receiptNo)
 	conn.WriteJSON(map[string]any{"status": "ok", "sdp": finalSDP, "stage": "webrtc_init"})
 
-	sub, exists := wm.WebRTCManager.getSubscriber(deviceIdentifier, receiptNo)
+	sub, exists := wm.WebRTCManager.GetSubscriber(deviceIdentifier, receiptNo)
 	if !exists {
 		log.Printf("Failed to get subscriber for device %s", deviceIdentifier)
 		conn.WriteJSON(map[string]any{"status": "error", "message": "Failed to get subscriber", "stage": "webrtc_init"})

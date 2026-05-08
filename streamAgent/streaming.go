@@ -16,6 +16,18 @@ func (sa *Agent) ServeVideoStream() {
 		return
 	}
 
+	// 如果没有 WebRTC 轨道，但有 WebSocket 回调，则走纯 WS 线路
+	if sa.videoTrack == nil {
+		if sa.OnVideoFrame != nil {
+			for vBox := range sa.videoCh {
+				sa.OnVideoFrame(vBox.Data)
+			}
+		} else {
+			log.Println("[Agent] videoTrack and OnVideoFrame both nil, skipping video streaming")
+		}
+		return
+	}
+
 	// 初始化打包器 (Pion 内部自带的工具)
 	codec := sa.videoTrack.Codec().MimeType
 	var payloader rtp.Payloader
@@ -65,6 +77,18 @@ func (sa *Agent) ServeAudioStream() {
 		sa.controlCh <- sdriver.TextMsgEvent{Msg: "Audio channel is nil, cannot stream audio."}
 		return
 	}
+
+	if sa.audioTrack == nil {
+		if sa.OnAudioFrame != nil {
+			for aBox := range sa.audioCh {
+				sa.OnAudioFrame(aBox.Data)
+			}
+		} else {
+			log.Println("[Agent] audioTrack and OnAudioFrame both nil, skipping audio streaming")
+		}
+		return
+	}
+
 	packetizer := rtp.NewPacketizer(1200, 0, 0, &codecs.OpusPayloader{}, rtp.NewRandomSequencer(), 48000)
 
 	var currentAudioRTP uint32 = 0

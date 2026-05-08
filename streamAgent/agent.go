@@ -26,6 +26,10 @@ type Agent struct {
 	audioTrack        *webrtc.TrackLocalStaticRTP
 	startTime         time.Time
 	useLocalTimestamp bool
+
+	// WebSocket 回调
+	OnVideoFrame func([]byte)
+	OnAudioFrame func([]byte)
 }
 
 // ========================

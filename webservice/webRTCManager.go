@@ -322,7 +322,7 @@ func (manager *WebRTCManager) GetAgent(deviceIdentifier string) (*sagent.Agent, 
 	return b.Agent, true
 }
 
-func (manager *WebRTCManager) getSubscriber(deviceIdentifier string, receiptNo uint32) (*Subscriber, bool) {
+func (manager *WebRTCManager) GetSubscriber(deviceIdentifier string, receiptNo uint32) (*Subscriber, bool) {
 	manager.RLock()
 	defer manager.RUnlock()
 	b, exists := manager.broadcasters[deviceIdentifier]
