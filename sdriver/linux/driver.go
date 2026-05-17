@@ -8,6 +8,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"path/filepath"
 	"time"
 	"webscreen/sdriver"
 	"webscreen/sdriver/comm"
@@ -73,22 +74,23 @@ func New(cfg map[string]string) (*LinuxDriver, error) {
 		log.Printf("[linux driver] 读取 recorder 失败: %v", err)
 		return nil, err
 	}
-	err = os.WriteFile("recorder", execFile, 0755)
+	recorderPath := filepath.Join(os.TempDir(), "recorder")
+	err = os.WriteFile(recorderPath, execFile, 0755)
 	if err != nil {
 		log.Printf("[linux driver] 写入本地文件失败: %v", err)
-		os.Remove("recorder")
+		os.Remove(recorderPath)
 		return nil, err
 	}
 	if d.ip == "127.0.0.1" || d.ip == "localhost" || d.ip == "" {
 		d.ip = "127.0.0.1"
 		log.Printf("[linux driver] 使用 backend=%s 启动本地 recorder", d.backend)
-		err = LocalStartRecorder("27184", d.resolution, d.bitRate, d.frameRate, d.video_codec, d.backend)
+		err = LocalStartRecorder(recorderPath, "27184", d.resolution, d.bitRate, d.frameRate, d.video_codec, d.backend)
 	} else {
 		err = PushAndStartRecorder(d.user, d.ip, "27184", d.resolution, d.bitRate, d.frameRate, d.video_codec, d.backend)
 	}
 	if err != nil {
 		log.Printf("[linux driver] 启动远程 recorder 失败: %v", err)
-		os.Remove("recorder")
+		os.Remove(recorderPath)
 		return nil, err
 	}
 
@@ -101,7 +103,7 @@ func New(cfg map[string]string) (*LinuxDriver, error) {
 		}
 		time.Sleep(time.Second)
 		if time.Since(startTime) > 5*time.Second {
-			os.Remove("recorder")
+			os.Remove(recorderPath)
 			return nil, fmt.Errorf("Failed to connect to recorder after 5 seconds: %v", err)
 		}
 	}

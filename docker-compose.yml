@@ -1,8 +1,12 @@
 services:
-  webscreen:
-    build: .
+  webscreen-full:
+    build:
+      context: .
+      args:
+        BUILD_VERSION: full
+    user: appuser
     image: dukihiroi/webscreen:latest
-    container_name: webscreen
+    container_name: webscreen-full
     network_mode: host
     # If you want to use bridge network:
     # You need to ensure that your device is accessible from the container
@@ -13,7 +17,13 @@ services:
     restart: unless-stopped
     volumes:
       - /dev/bus/usb:/dev/bus/usb
+    devices:
+      - /dev/uinput:/dev/uinput
+      - /dev/dri:/dev/dri
+    group_add:
+      - ${UINPUT_GID}
+    privileged: true
     environment:
       - GIN_MODE=release
-      # - PORT=8079
-      - PIN=123456
+      - PORT=8081
+      - PIN=DISABLED

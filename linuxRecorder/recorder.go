@@ -80,5 +80,5 @@ func main() {
 		return
 	}
 
-	go session.ServePushFrames()
+	session.ServePushFrames()
 }

@@ -65,10 +65,26 @@ Or you can build by yourself. Normally, you can build simply by `go build`. But 
 
 You can also use docker:
 
-```bash
-wget https://raw.githubusercontent.com/huonwe/webscreen/refs/heads/main/docker-compose.yml
-
-docker compose up -d
+```yaml
+services:
+  webscreen:
+    image: dukihiroi/webscreen:latest
+    container_name: webscreen
+    network_mode: host
+    # If you want to use bridge network:
+    # You need to ensure that your device is accessible from the container
+    # You also need to forward the necessary UDP traffic. If you face problems on it, please use host network mode.
+    # ports:
+    #   - "8079:8079"
+    #   - "51200-51299:51200-51299/udp"
+    restart: unless-stopped
+    volumes:
+      - /dev/bus/usb:/dev/bus/usb
+    privileged: true
+    environment:
+      - GIN_MODE=release
+      - PORT=8081
+      - PIN=DISABLED
 ```
 
 `host` network mode is recommended because of UDP traffic and device connection.

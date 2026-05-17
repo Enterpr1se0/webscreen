@@ -3,6 +3,10 @@ recorder
 
 test
 
+# docker related
+.env
+
 bin/
+dist/
 
 .vscode/

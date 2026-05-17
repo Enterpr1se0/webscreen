@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"os"
 	"os/exec"
-	"strings"
 )
 
 // GetBestH264Encoder 自动检测最佳 H.264 编码器
@@ -81,14 +80,13 @@ func GetBestHEVCEncoder() string {
 	return "libx265"
 }
 
-// HasEncoder 运行 ffmpeg -encoders 并检查输出
+// HasEncoder 运行一个真实的编码测试，验证编码器及真实硬件/驱动是否可用
 func HasEncoder(name string) bool {
-	cmd := exec.Command("ffmpeg", "-encoders")
-	out, err := cmd.CombinedOutput()
-	if err != nil {
-		return false
-	}
-	return strings.Contains(string(out), name)
+	// 使用 lavfi 生成1帧 256x256 的黑屏帧，并使用指定编码器尝试编码，输出到 null 设备
+	// 这样可以真实地唤起底层硬件驱动，若无实际硬件或驱动损坏则会失败
+	cmd := exec.Command("ffmpeg", "-v", "error", "-f", "lavfi", "-i", "color=c=black:s=256x256", "-vframes", "1", "-c:v", name, "-f", "null", "-")
+	err := cmd.Run()
+	return err == nil
 }
 
 // SplitNALU 是 bufio.SplitFunc 的实现，用于切分 H.264 Annex B 流

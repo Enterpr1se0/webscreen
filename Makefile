@@ -29,8 +29,8 @@ RECORDER_BIN := recorder
 
 RECORDER_OUT := $(RECORDER_DIR)/$(RECORDER_BIN)
 # 2. Main 程序输出路径 (可变)
-DIST_DIR ?= .
-SUFFIX ?= 
+DIST_DIR ?= dist
+SUFFIX ?= -$(GOOS)-$(GOARCH)
 MAIN_OUT := $(DIST_DIR)/webscreen$(SUFFIX)$(EXE)
 
 # --- 构建目标 ---
