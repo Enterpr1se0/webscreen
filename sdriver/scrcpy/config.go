@@ -2,9 +2,20 @@ package scrcpy
 
 import (
 	"context"
+	"embed"
 	"strings"
 	"webscreen/sdriver"
 )
+
+const (
+	SCRCPY_SERVER_LOCAL_PATH  = "./scrcpy-server"
+	SCRCPY_SERVER_ANDROID_DST = "/data/local/tmp/scrcpy-server"
+	SCRCPY_PROXY_PORT_DEFAULT = "27183"
+	SCRCPY_VERSION            = "4.0"
+)
+
+//go:embed bin/scrcpy-server-v4.0
+var scrcpyServerData embed.FS
 
 // Receive an optional params
 func ConfigDescription(opt string) []sdriver.ConfigParamDescription {

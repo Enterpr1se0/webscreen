@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Sway 配置 (仅在安装了 seatd 的 Full 版本中生效)
 if command -v seatd >/dev/null 2>&1; then

@@ -33,7 +33,10 @@ const (
 	EVENT_TYPE_UHID_INPUT   EventType = 0x0D
 	EVENT_TYPE_UHID_DESTROY EventType = 0x0E
 
-	EVENT_TYPE_REQ_IDR EventType = 0x63
+	EVENT_TYPE_OPEN_HARD_KEYBOARD_SETTINGS EventType = 0x0F
+	EVENT_TYPE_RESET_VIDEO                 EventType = 0x10
+
+	EVENT_TYPE_REQ_IDR EventType = EVENT_TYPE_RESET_VIDEO
 	// -> Web Toast Message
 	EVENT_TYPE_TEXT_MSG EventType = 0x64
 )

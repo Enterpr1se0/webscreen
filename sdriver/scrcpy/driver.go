@@ -3,7 +3,6 @@ package scrcpy
 import (
 	"bytes"
 	"context"
-	"embed"
 	"encoding/binary"
 	"fmt"
 	"io"
@@ -17,16 +16,6 @@ import (
 	"webscreen/sdriver"
 	"webscreen/sdriver/comm"
 	"webscreen/utils"
-)
-
-//go:embed bin/scrcpy-server-master
-var scrcpyServerData embed.FS
-
-const (
-	SCRCPY_SERVER_LOCAL_PATH  = "./scrcpy-server"
-	SCRCPY_SERVER_ANDROID_DST = "/data/local/tmp/scrcpy-server"
-	SCRCPY_PROXY_PORT_DEFAULT = "27183"
-	SCRCPY_VERSION            = "3.3.4"
 )
 
 type ScrcpyDriver struct {
