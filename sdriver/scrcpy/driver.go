@@ -75,7 +75,7 @@ func New(config map[string]string) (*ScrcpyDriver, error) {
 	da.ctx, da.cancel = context.WithCancel(context.Background())
 	da.adbClient = NewADBClient(config["deviceID"], da.scid, da.ctx)
 
-	data, err := scrcpyServerData.ReadFile("bin/scrcpy-server-master")
+	data, err := scrcpyServerData.ReadFile(SCRCPY_EMBED_PATH)
 	if err != nil {
 		log.Printf("[scrcpy] read scrcpy-server failed: %v", err)
 		return nil, err
