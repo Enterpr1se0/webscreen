@@ -259,17 +259,16 @@ func (da *ScrcpyDriver) SendUHIDDestroyEvent(e *sdriver.UHIDDestroyEvent) {
 }
 
 func (da *ScrcpyDriver) KeyFrameRequest() error {
-	// return nil
-	if da.controlConn == nil {
-		return nil
-	}
-	log.Println("⚡ Sending Request KeyFrame (Type 99)...")
-	msg := []byte{TYPE_REQUEST_IDR}
-	//<-da.VideoChan
-	_, err := da.controlConn.Write(msg)
-	if err != nil {
-		log.Printf("Error sending keyframe request: %v\n", err)
-		return err
-	}
+	// if da.controlConn == nil {
+	// 	return nil
+	// }
+	// log.Println("⚡ Sending Request KeyFrame (Type 99)...")
+	// msg := []byte{TYPE_REQUEST_IDR}
+	// //<-da.VideoChan
+	// _, err := da.controlConn.Write(msg)
+	// if err != nil {
+	// 	log.Printf("Error sending keyframe request: %v\n", err)
+	// 	return err
+	// }
 	return nil
 }

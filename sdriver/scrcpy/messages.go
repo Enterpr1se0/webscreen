@@ -19,7 +19,7 @@ const TYPE_UHID_DESTROY uint8 = 14                //销毁uhid
 const TYPE_OPEN_HARD_KEYBOARD_SETTINGS uint8 = 15 //打开硬件键盘设置
 const TYPE_START_APP uint8 = 16                   //启动应用
 const TYPE_RESET_VIDEO uint8 = 17
-const TYPE_REQUEST_IDR uint8 = 99
+const TYPE_REQUEST_IDR uint8 = TYPE_RESET_VIDEO
 
 const COPY_KEY_NONE = 0
 const COPY_KEY_COPY = 1

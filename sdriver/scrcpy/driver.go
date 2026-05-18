@@ -376,11 +376,6 @@ func (da *ScrcpyDriver) assignConn(conn net.Conn) error {
 	case "h264", "h265", "av1 ":
 		da.videoConn = conn
 		da.mediaMeta.VideoCodec = codecID
-		err := da.readVideoMeta(conn)
-		if err != nil {
-			log.Fatalln("Failed to read video metadata:", err)
-			return err
-		}
 		da.capabilities.CanVideo = true
 		log.Println("Scrcpy Video Connection Established")
 	case "aac ", "opus":
@@ -402,23 +397,8 @@ func (da *ScrcpyDriver) readDeviceMeta(conn net.Conn) error {
 	if err != nil {
 		return err
 	}
+	log.Println("read nameBuf from scrcpy: ", string(nameBuf))
 	da.deviceName = string(nameBuf)
-	return nil
-}
-
-func (da *ScrcpyDriver) readVideoMeta(conn net.Conn) error {
-	// Width (4 bytes)
-	// Height (4 bytes)
-	// Codec 已经在外面读取过了，用于确认是哪个通道
-	metaBuf := make([]byte, 8)
-	if _, err := io.ReadFull(conn, metaBuf); err != nil {
-		log.Println("Failed to read metadata:", err)
-		return err
-	}
-	// 解析元数据
-	da.mediaMeta.Width = binary.BigEndian.Uint32(metaBuf[0:4])
-	da.mediaMeta.Height = binary.BigEndian.Uint32(metaBuf[4:8])
-
 	return nil
 }
 
@@ -455,11 +435,11 @@ func readScrcpyFrameHeader(headerBuf []byte, header *ScrcpyFrameHeader) error {
 	packetSize := binary.BigEndian.Uint32(headerBuf[8:12])
 
 	// 提取标志位
-	isConfig := (ptsAndFlags & 0x8000000000000000) != 0
-	isKeyFrame := (ptsAndFlags & 0x4000000000000000) != 0
+	isConfig := (headerBuf[0] & 0x40) != 0
+	isKeyFrame := (headerBuf[0] & 0x20) != 0
 
-	// 提取PTS (低62位)
-	pts := uint64(ptsAndFlags & 0x3FFFFFFFFFFFFFFF)
+	// 提取PTS (低61位)
+	pts := ptsAndFlags & 0x1FFFFFFFFFFFFFFF
 	header.IsConfig = isConfig
 	header.IsKeyFrame = isKeyFrame
 	header.PTS = pts

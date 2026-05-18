@@ -14,16 +14,31 @@ func (da *ScrcpyDriver) convertVideoFrame() {
 	header := ScrcpyFrameHeader{}
 	var nalTypeF func(byte) byte
 	var nalType byte
+
 	for {
 		// read frame header
 		if _, err := io.ReadFull(da.videoConn, headerBuf[:]); err != nil {
 			log.Println("Failed to read scrcpy frame header:", err)
 			return
 		}
+
+		// check if it's a session packet (MSB == 1)
+		if (headerBuf[0] & 0x80) != 0 {
+			width := binary.BigEndian.Uint32(headerBuf[4:8])
+			height := binary.BigEndian.Uint32(headerBuf[8:12])
+			log.Printf("Received session packet, new size: %dx%d", width, height)
+			da.mediaMeta.Width = width
+			da.mediaMeta.Height = height
+
+			continue
+		}
+
 		if err := readScrcpyFrameHeader(headerBuf[:], &header); err != nil {
 			log.Println("Failed to read scrcpy frame header:", err)
 			return
 		}
+		// log.Println("header:", string(headerBuf[:]))
+
 		da.LastPTS = header.PTS
 		// showFrameHeaderInfo(frame.Header)
 		frameSize := int(header.Size)
@@ -35,6 +50,9 @@ func (da *ScrcpyDriver) convertVideoFrame() {
 			log.Println("Failed to read video frame payload:", err)
 			return
 		}
+		// if header.Size == 0 {
+		// 	continue
+		// }
 		switch da.mediaMeta.VideoCodec {
 		case "h265":
 			nalTypeF = func(payloadBuf byte) byte { return (payloadBuf >> 1) & 0x3F }
