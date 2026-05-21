@@ -373,7 +373,7 @@ func (da *ScrcpyDriver) EncoderList() []string {
 func (da *ScrcpyDriver) assignConn(conn net.Conn) error {
 	codecID := readCodecID(conn)
 	switch codecID {
-	case "h264", "h265", "av1 ":
+	case "h264", "h265", "av1":
 		da.videoConn = conn
 		da.mediaMeta.VideoCodec = codecID
 		da.capabilities.CanVideo = true
