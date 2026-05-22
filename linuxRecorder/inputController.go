@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
+	"log"
 	"net"
 
 	"github.com/bendahl/uinput"
@@ -159,10 +160,13 @@ func (ic *InputController) ServeControlConn(conn net.Conn) error {
 // HandleMouseEvent 处理鼠标事件并分发到对应底层接口
 func (ic *InputController) HandleMouseEvent(action byte, deltaX, deltaY int32, buttons uint32, wheelDeltaX, wheelDeltaY int16) {
 	// 1. 处理鼠标移动 (使用相对坐标 deltaX, deltaY)
-	// log.Printf("Mouse Event - Action: %d, DeltaX: %d, DeltaY: %d", action, deltaX, deltaY)
+	log.Printf("Mouse Event - Action: %d, DeltaX: %d, DeltaY: %d", action, deltaX, deltaY)
 	if deltaX != 0 || deltaY != 0 {
 		if ic.controllerType == CONTROLLER_TYPE_WAYLAND {
-			_ = ic.mouse.Move(deltaX, deltaY)
+			err := ic.mouse.Move(deltaX, deltaY)
+			if err != nil {
+				log.Printf("Error moving mouse: %v", err)
+			}
 		} else {
 			// X11 是相对坐标移动 (dstWindow 传 0 即为相对移动)
 			xproto.WarpPointer(ic.conn, 0, 0, 0, 0, 0, 0, int16(deltaX), int16(deltaY))

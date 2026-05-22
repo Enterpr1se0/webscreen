@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: docker/full/Dockerfile
-    # user: appuser
+    user: appuser
     image: dukihiroi/webscreen:latest
     container_name: webscreen-full
     network_mode: host
@@ -16,6 +16,8 @@ services:
     restart: unless-stopped
     volumes:
       - /dev/bus/usb:/dev/bus/usb
+      - /dev/input:/dev/input
+      - /run/udev:/run/udev:ro
     devices:
       - /dev/uinput:/dev/uinput
       - /dev/dri:/dev/dri

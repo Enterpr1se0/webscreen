@@ -50,10 +50,9 @@ func (s *Session) launchWaylandSession(width int, height int, frameRate int) err
 		"WLR_BACKENDS=headless,libinput",
 		// 告诉 libseat 去找 seatd 代理，不要自己动 tty
 		"SEATD_SOCK=/run/seatd.sock",
-		// 确保 libinput 被允许扫描设备
-		"WLR_LIBINPUT_NO_DEVICES=0",
-		// 其他你原有的环境变量...
-		"WLR_RENDERER=pixman", // 强制使用软件渲染，避免某些 GPU 驱动的兼容性问题
+		// 此处设为 1 只是为了“跳过由0个设备引发的启动时崩溃”，绝不会禁用 libinput
+		"WLR_LIBINPUT_NO_DEVICES=1",
+		// "WLR_RENDERER=pixman", // 强制使用软件渲染，避免某些 GPU 驱动的兼容性问题
 	)
 	swayCmd.Stdout = os.Stdout
 	swayCmd.Stderr = os.Stderr

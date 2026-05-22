@@ -28,10 +28,11 @@ func (s *Session) launchXorgSession(width int, height int, frameRate int) error 
 		"-noreset",
 		"-nolisten", "tcp",
 		// "-keeptty",  // 之前加的这个可以先注释掉
+		"-sharevts",
 		"+extension", "GLX",
 		"+extension", "RANDR",
 		"+extension", "RENDER",
-		// "vt7", // 👈 强制告诉 Xorg 去使用 7 号控制台
+		"vt7",
 		"-logfile", logPath,
 	)
 	xorgCmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
