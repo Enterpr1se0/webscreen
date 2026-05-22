@@ -44,12 +44,11 @@ type ScrcpyDriver struct {
 	scid      string
 	// socketName string
 
-	cacheMutex sync.RWMutex
-	LastVPS    []byte
-	LastSPS    []byte
-	LastPPS    []byte
-	LastIDR    []byte
-	// LastPTS            time.Duration
+	cacheMutex         sync.RWMutex
+	LastVPS            []byte
+	LastSPS            []byte
+	LastPPS            []byte
+	LastIDR            []byte
 	LastPTS            uint64
 	LastIDRRequestTime time.Time
 }
@@ -424,9 +423,13 @@ func (da *ScrcpyDriver) updateVideoMetaFromSPS(sps []byte, codec string) {
 		log.Println("Failed to parse SPS for video meta update:", err)
 		return
 	}
-	da.mediaMeta.Width = spsInfo.Width
-	da.mediaMeta.Height = spsInfo.Height
-	log.Printf("[scrcpy] Updated Video Meta from SPS: Width=%d, Height=%d", da.mediaMeta.Width, da.mediaMeta.Height)
+	da.updateSize(spsInfo.Width, spsInfo.Height)
+}
+
+func (da *ScrcpyDriver) updateSize(width, height uint32) {
+	da.mediaMeta.Width = width
+	da.mediaMeta.Height = height
+	log.Printf("[scrcpy] Updated Video Meta from session packet: Width=%d, Height=%d", da.mediaMeta.Width, da.mediaMeta.Height)
 }
 
 func readScrcpyFrameHeader(headerBuf []byte, header *ScrcpyFrameHeader) error {

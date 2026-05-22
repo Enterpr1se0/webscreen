@@ -22,7 +22,7 @@ func ConfigDescription() []ConfigParamDescription {
 			Type:        "boolean",
 			Required:    true,
 			Default:     false,
-			Description: "Use WebSocket instead of WebRTC for streaming.",
+			Description: "Use WebSocket instead of WebRTC for streaming. (Now developing, no real effect yet)",
 		},
 	}
 }

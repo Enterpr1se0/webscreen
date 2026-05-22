@@ -27,9 +27,7 @@ func (da *ScrcpyDriver) convertVideoFrame() {
 			width := binary.BigEndian.Uint32(headerBuf[4:8])
 			height := binary.BigEndian.Uint32(headerBuf[8:12])
 			log.Printf("Received session packet, new size: %dx%d", width, height)
-			da.mediaMeta.Width = width
-			da.mediaMeta.Height = height
-
+			da.updateSize(width, height)
 			continue
 		}
 
@@ -50,9 +48,7 @@ func (da *ScrcpyDriver) convertVideoFrame() {
 			log.Println("Failed to read video frame payload:", err)
 			return
 		}
-		// if header.Size == 0 {
-		// 	continue
-		// }
+
 		switch da.mediaMeta.VideoCodec {
 		case "h265":
 			nalTypeF = func(payloadBuf byte) byte { return (payloadBuf >> 1) & 0x3F }
