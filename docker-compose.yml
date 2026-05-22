@@ -2,9 +2,8 @@ services:
   webscreen-full:
     build:
       context: .
-      args:
-        BUILD_VERSION: full
-    user: appuser
+      dockerfile: docker/full/Dockerfile
+    # user: appuser
     image: dukihiroi/webscreen:latest
     container_name: webscreen-full
     network_mode: host

@@ -20,6 +20,13 @@ if command -v seatd >/dev/null 2>&1; then
         sudo chmod 666 /dev/uinput
     fi
 
+    # 启动 udevd 以支持热插拔输入设备 (Wayland/libinput 需要)
+    if command -v systemd-udevd >/dev/null 2>&1; then
+        sudo /lib/systemd/systemd-udevd --daemon
+    elif command -v udevd >/dev/null 2>&1; then
+        sudo udevd --daemon
+    fi
+
     echo "[Init] Starting seatd daemon..."
     # 使用 sudo 启动 seatd，绑定给 video 组（appuser 所在的组）
     # 默认创建 socket 位于 /run/seatd.sock
