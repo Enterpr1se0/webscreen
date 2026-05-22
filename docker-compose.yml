@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: docker/full/Dockerfile
     user: appuser
-    image: dukihiroi/webscreen:latest
+    image: dukihiroi/webscreen-full:latest
     container_name: webscreen-full
     network_mode: host
     # If you want to use bridge network:

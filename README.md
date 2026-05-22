@@ -63,7 +63,9 @@ Then open your favorite browser and visit `<your ip>:<your port>`
 
 Or you can build by yourself. Normally, you can build simply by `go build`. But if you want to build by yourself on `Termux`, you need to run `go build -ldflags "-checklinkname=0"`.
 
-You can also use docker:
+You can also use docker.
+
+For lite version:
 
 ```yaml
 services:
@@ -87,6 +89,33 @@ services:
       - PIN=DISABLED
 ```
 
+For full version which including Linux desktop environment:
+`cp .env.sample .env`
+
+```yaml
+services:
+  webscreen-full:
+    user: appuser
+    image: dukihiroi/webscreen-full:latest
+    container_name: webscreen-full
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - /dev/bus/usb:/dev/bus/usb
+      - /dev/input:/dev/input
+      - /run/udev:/run/udev:ro
+    devices:
+      - /dev/uinput:/dev/uinput
+      - /dev/dri:/dev/dri
+    group_add:
+      - ${UINPUT_GID}
+    privileged: true
+    environment:
+      - GIN_MODE=release
+      - PORT=8081
+      - PIN=DISABLED
+```
+
 `host` network mode is recommended because of UDP traffic and device connection.
 
 You might need to pair Android device in [wireless debug](https://developer.android.com/studio/debug/dev-options#enable) first. `Pair device with pairing code` is supported. Once you finished pairing, type `Connect` button and enter necessary information.
@@ -99,7 +128,6 @@ After you start streaming, you might need to manually make the scene a little ch
 
 ## Known Issues
 
-- Xvfb wouldn't work in docker and termux
 - Crash: MediaCodec 0x80001001 Exception on custom Android devices due to hardcoded H.264 High Profile (profile=8) [#11](https://github.com/huonwe/webscreen/issues/11)
   - set **profile=1** to **video_codec_options**
 
