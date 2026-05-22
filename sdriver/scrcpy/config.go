@@ -24,7 +24,7 @@ func ConfigDescription(opt string) []sdriver.ConfigParamDescription {
 	var encoderListStr string
 	if deviceID != "" {
 		adbClient := NewADBClient(deviceID, "", context.Background())
-		encoderList := adbClient.SupportedEncoderList()
+		encoderList := adbClient.SupportedVideoEncoderList()
 		encoderListStr = strings.Join(encoderList, ",")
 		adbClient.Stop()
 	} else {

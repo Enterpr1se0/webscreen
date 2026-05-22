@@ -133,7 +133,7 @@ func (c *ADBClient) SupportOpusAudio() bool {
 	return strings.Contains(outputStr, "opus.encoder")
 }
 
-func (c *ADBClient) SupportedEncoderList() []string {
+func (c *ADBClient) SupportedVideoEncoderList() []string {
 	// 1. 构造 shell 命令
 	cmdStr := "grep -E '<MediaCodec name=\"[^\"]*encoder[^\"]*\"' " +
 		"/system/etc/media_codecs*.xml " +
@@ -168,8 +168,7 @@ func (c *ADBClient) SupportedEncoderList() []string {
 			start := idx + 6
 			if end := strings.Index(line[start:], "\""); end != -1 {
 				name := line[start : start+end]
-				// 可以在这里只保留 video 相关的 encoder，比如包含 video 或 hevc/avc 的等，
-				// 这里做个简单过滤以避免重复和非 encoder 实体
+				// 这里只保留 video 相关的 encoder，避免混入 audio 等其他 encoder
 				found := false
 				for _, e := range encoders {
 					if e == name {
@@ -177,7 +176,7 @@ func (c *ADBClient) SupportedEncoderList() []string {
 						break
 					}
 				}
-				if !found && strings.Contains(strings.ToLower(name), "encoder") {
+				if !found && strings.Contains(strings.ToLower(name), "encoder") && strings.Contains(strings.ToLower(line), "video") {
 					encoders = append(encoders, name)
 				}
 			}
